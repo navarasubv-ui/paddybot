@@ -1,6 +1,6 @@
 flask
 requests
-tensorflow
+tensorflow-cpu==2.15.0
 pillow
 numpy
 gunicorn
