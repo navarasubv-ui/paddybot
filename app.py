@@ -3,7 +3,7 @@ import requests
 import os
 from PIL import Image, ImageOps
 import numpy as np
-import tflite_runtime.interpreter as tflite
+import tensorflow as tf
 
 app = Flask(__name__)
 
@@ -14,8 +14,8 @@ PHONE_NUMBER_ID = "1005973195933095"
 # ===========================
 
 
-# ================= LOAD MODEL ONCE =================
-interpreter = tflite.Interpreter(model_path="model.tflite")
+# ================= LOAD TFLITE MODEL ONCE =================
+interpreter = tf.lite.Interpreter(model_path="model.tflite")
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
@@ -23,7 +23,7 @@ output_details = interpreter.get_output_details()
 
 with open("labels.txt", "r") as f:
     class_names = f.readlines()
-# ====================================================
+# ===========================================================
 
 
 DISEASE_MANAGEMENT = {
@@ -91,6 +91,7 @@ def webhook():
 
             try:
                 predicted_class, confidence = predict_paddy_disease(local_image_path)
+
                 advice = DISEASE_MANAGEMENT.get(
                     predicted_class,
                     "Diagnosis complete. Please consult agricultural expert."
@@ -104,7 +105,7 @@ def webhook():
 
             except Exception as e:
                 print("Prediction error:", e)
-                reply_text = "Error during prediction. Please send a clear image."
+                reply_text = "Prediction failed. Please send a clear image."
 
         else:
             reply_text = "🌱 Please send a paddy leaf image for disease detection."
