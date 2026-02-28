@@ -1,6 +1,6 @@
 flask
 requests
-tensorflow==2.15.0
+tflite-runtime
 pillow
 numpy
 gunicorn
